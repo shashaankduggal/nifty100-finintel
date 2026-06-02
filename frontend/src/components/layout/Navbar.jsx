@@ -6,7 +6,7 @@ import { PageContainer } from "./PageContainer";
 const navLinks = [
   { label: "Features", href: "#features" },
   { label: "Dashboard", href: "/dashboard" },
-  { label: "Login", href: "/login" },
+  { label: "Admin Login", href: "/admin/login" },
 ];
 
 export function Navbar() {
@@ -46,8 +46,8 @@ export function Navbar() {
             ),
           )}
           <Button asChild variant="primary" className="ml-2">
-            <Link to="/register">
-              Get started
+            <Link to="/admin/login">
+              Admin login
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
@@ -56,4 +56,3 @@ export function Navbar() {
     </header>
   );
 }
-

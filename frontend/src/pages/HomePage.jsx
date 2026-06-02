@@ -107,8 +107,8 @@ export function HomePage() {
               className="mt-8 flex flex-col gap-3 sm:flex-row"
             >
               <Button asChild size="lg">
-                <Link to="/register">
-                  Start exploring
+                <Link to="/admin/login">
+                  Admin login
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
@@ -205,7 +205,7 @@ export function HomePage() {
                 <Link to="/dashboard">Open dashboard</Link>
               </Button>
               <Button asChild variant="secondary">
-                <Link to="/login">Log in</Link>
+                <Link to="/admin/login">Log in</Link>
               </Button>
             </div>
           </Card>
@@ -248,4 +248,3 @@ export function HomePage() {
     </div>
   );
 }
-

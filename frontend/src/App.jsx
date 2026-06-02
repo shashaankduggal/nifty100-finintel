@@ -29,6 +29,10 @@ export default function App() {
         />
         <Route
           path="/login"
+          element={<Navigate to="/admin/login" replace />}
+        />
+        <Route
+          path="/admin/login"
           element={
             <motion.div {...routeTransition}>
               <LoginPage />
@@ -58,4 +62,3 @@ export default function App() {
     </AnimatePresence>
   );
 }
-

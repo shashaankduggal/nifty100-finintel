@@ -10,8 +10,8 @@ import { useAuth } from "../context/AuthContext";
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
-  const [formState, setFormState] = useState({ email: "", password: "" });
+  const { adminLogin, isAuthenticated } = useAuth();
+  const [formState, setFormState] = useState({ identifier: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const from = location.state?.from?.pathname ?? "/dashboard";
@@ -22,10 +22,14 @@ export function LoginPage() {
     setError("");
 
     try {
-      await login(formState);
+      await adminLogin(formState);
       navigate(from, { replace: true });
     } catch (authError) {
-      setError(authError?.response?.data?.detail ?? "Login failed. Connect the JWT backend and try again.");
+      const responseMessage =
+        authError?.response?.data?.detail ??
+        authError?.response?.data?.non_field_errors?.[0] ??
+        "Admin login failed. Connect a staff account and try again.";
+      setError(responseMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -45,14 +49,14 @@ export function LoginPage() {
         >
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-100">
             <LockKeyhole className="h-4 w-4" />
-            Secure JWT access
+            Admin JWT access
           </div>
           <h1 className="mt-6 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Sign in to the research workspace.
+            Sign in with your admin username or email.
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-slate-300">
-            This flow is wired for DRF SimpleJWT with access/refresh token rotation, protected
-            routes, and refresh handling.
+            This admin flow is wired for DRF SimpleJWT with access/refresh token rotation,
+            protected routes, and refresh handling.
           </p>
           <div className="mt-8 text-sm text-slate-400">
             No account yet?{" "}
@@ -65,28 +69,31 @@ export function LoginPage() {
         <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }}>
           <Card className="mx-auto w-full max-w-xl p-6 sm:p-8">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-white">Welcome back</h2>
-              <p className="mt-2 text-sm text-slate-400">Use your financial intelligence account.</p>
+              <h2 className="text-2xl font-semibold text-white">Admin login</h2>
+              <p className="mt-2 text-sm text-slate-400">
+                Use the staff username or email assigned to this workspace.
+              </p>
             </div>
 
             <form className="space-y-4" onSubmit={submit}>
               <label className="block">
-                <span className="mb-2 block text-sm text-slate-300">Email</span>
+                <span className="mb-2 block text-sm text-slate-300">Admin username or email</span>
                 <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   <Mail className="h-4 w-4 text-slate-400" />
                   <input
                     required
-                    type="email"
-                    value={formState.email}
-                    onChange={(event) => setFormState((current) => ({ ...current, email: event.target.value }))}
+                    value={formState.identifier}
+                    onChange={(event) =>
+                      setFormState((current) => ({ ...current, identifier: event.target.value }))
+                    }
                     className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500"
-                    placeholder="name@company.com"
+                    placeholder="admin@company.com or admin"
                   />
                 </div>
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-sm text-slate-300">Password</span>
+                <span className="mb-2 block text-sm text-slate-300">Admin password</span>
                 <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   <LockKeyhole className="h-4 w-4 text-slate-400" />
                   <input
@@ -107,7 +114,7 @@ export function LoginPage() {
               ) : null}
 
               <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Signing in..." : "Sign in"}
+                {isSubmitting ? "Signing in..." : "Sign in as admin"}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </form>
@@ -117,4 +124,3 @@ export function LoginPage() {
     </PageContainer>
   );
 }
-

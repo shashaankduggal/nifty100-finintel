@@ -139,7 +139,7 @@ export function RegisterPage() {
           </p>
           <div className="mt-8 text-sm text-slate-400">
             Already have an account?{" "}
-            <Link to="/login" className="text-cyan-200 underline-offset-4 hover:underline">
+            <Link to="/admin/login" className="text-cyan-200 underline-offset-4 hover:underline">
               Sign in here
             </Link>
           </div>
@@ -148,4 +148,3 @@ export function RegisterPage() {
     </PageContainer>
   );
 }
-

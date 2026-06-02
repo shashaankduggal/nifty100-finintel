@@ -58,8 +58,11 @@ try {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 1440, height: 1600 } });
 
-  await page.goto(`${baseUrl}/`, { waitUntil: "networkidle" });
-  await page.screenshot({ path: resolve(designAssetsDir, "phase-b-landing.png"), fullPage: true });
+  await page.goto(`${baseUrl}/admin/login`, { waitUntil: "networkidle" });
+  await page.screenshot({
+    path: resolve(designAssetsDir, "phase-c-admin-login.png"),
+    fullPage: true,
+  });
 
   await page.addInitScript(() => {
     sessionStorage.setItem("nifty100_access_token", "demo-access-token");
@@ -75,7 +78,7 @@ try {
 
   await page.goto(`${baseUrl}/dashboard`, { waitUntil: "networkidle" });
   await page.screenshot({
-    path: resolve(designAssetsDir, "phase-b-dashboard.png"),
+    path: resolve(designAssetsDir, "phase-c-dashboard.png"),
     fullPage: true,
   });
 
