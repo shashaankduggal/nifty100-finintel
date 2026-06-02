@@ -22,7 +22,7 @@ class Company(models.Model):
 
 
 class ProfitLoss(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.BigIntegerField(primary_key=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.DO_NOTHING,
@@ -54,7 +54,7 @@ class ProfitLoss(models.Model):
 
 
 class BalanceSheet(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.BigIntegerField(primary_key=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.DO_NOTHING,
@@ -84,7 +84,7 @@ class BalanceSheet(models.Model):
 
 
 class CashFlow(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.BigIntegerField(primary_key=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.DO_NOTHING,
@@ -114,9 +114,10 @@ class Analysis(models.Model):
         db_column="company_id",
         to_field="id",
         related_name="analysis_records",
+        primary_key=True,
     )
     metric = models.CharField(max_length=120)
-    value_pct = models.DecimalField(max_digits=18, decimal_places=4, blank=True, null=True)
+    value_pct = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -134,15 +135,16 @@ class Metrics(models.Model):
         db_column="company_id",
         to_field="id",
         related_name="metric_records",
+        primary_key=True,
     )
     year = models.CharField(max_length=32)
-    debt_equity = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
-    roa = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
-    asset_turnover = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
-    interest_coverage = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
-    net_profit_margin = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
-    cash_conversion_ratio = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
-    roe_calc = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
+    debt_equity = models.FloatField(blank=True, null=True)
+    roa = models.TextField(blank=True, null=True)
+    asset_turnover = models.FloatField(blank=True, null=True)
+    interest_coverage = models.TextField(blank=True, null=True)
+    net_profit_margin = models.TextField(blank=True, null=True)
+    cash_conversion_ratio = models.TextField(blank=True, null=True)
+    roe_calc = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -160,9 +162,10 @@ class HealthScore(models.Model):
         db_column="company_id",
         to_field="id",
         related_name="health_scores",
+        primary_key=True,
     )
     year = models.CharField(max_length=32)
-    health_score = models.DecimalField(max_digits=18, decimal_places=4, blank=True, null=True)
+    health_score = models.FloatField(blank=True, null=True)
     health_label = models.CharField(max_length=32)
 
     class Meta:
@@ -181,10 +184,11 @@ class Forecast(models.Model):
         db_column="company_id",
         to_field="id",
         related_name="forecasts",
+        primary_key=True,
     )
     last_year = models.DateTimeField(blank=True, null=True)
-    sales_forecast = models.DecimalField(max_digits=18, decimal_places=4, blank=True, null=True)
-    profit_forecast = models.DecimalField(max_digits=18, decimal_places=4, blank=True, null=True)
+    sales_forecast = models.FloatField(blank=True, null=True)
+    profit_forecast = models.FloatField(blank=True, null=True)
     trend = models.CharField(max_length=16)
 
     class Meta:
@@ -203,6 +207,7 @@ class Peer(models.Model):
         db_column="company_id",
         to_field="id",
         related_name="peer_group",
+        primary_key=True,
     )
     peer_company = models.ForeignKey(
         Company,
@@ -211,7 +216,7 @@ class Peer(models.Model):
         to_field="id",
         related_name="peer_matches",
     )
-    similarity_score = models.DecimalField(max_digits=18, decimal_places=6, blank=True, null=True)
+    similarity_score = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -219,19 +224,19 @@ class Peer(models.Model):
         ordering = ["company_id", "-similarity_score"]
 
     def __str__(self) -> str:
-        return f"{self.company_id} ↔ {self.peer_company_id}"
+        return f"{self.company_id} vs {self.peer_company_id}"
 
 
 class Document(models.Model):
-    id = models.IntegerField(primary_key=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.DO_NOTHING,
         db_column="company_id",
         to_field="id",
         related_name="documents",
+        primary_key=True,
     )
-    year = models.IntegerField(blank=True, null=True)
+    year = models.BigIntegerField(blank=True, null=True)
     document_url = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -244,13 +249,13 @@ class Document(models.Model):
 
 
 class ProsCons(models.Model):
-    id = models.IntegerField(primary_key=True)
     company = models.ForeignKey(
         Company,
         on_delete=models.DO_NOTHING,
         db_column="company_id",
         to_field="id",
         related_name="pros_cons",
+        primary_key=True,
     )
     pros = models.TextField(blank=True, null=True)
     cons = models.TextField(blank=True, null=True)
@@ -262,4 +267,3 @@ class ProsCons(models.Model):
 
     def __str__(self) -> str:
         return self.company_id
-

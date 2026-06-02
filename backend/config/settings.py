@@ -93,6 +93,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MIGRATION_MODULES = {
     "warehouse": None,
 }
+SILENCED_SYSTEM_CHECKS = ["fields.W342"]
 
 CORS_ALLOWED_ORIGINS = get_csv_env("CORS_ALLOWED_ORIGINS")
 CORS_ALLOW_CREDENTIALS = get_bool_env("CORS_ALLOW_CREDENTIALS", True)
