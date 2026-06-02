@@ -1,0 +1,11 @@
+.env
+venv/
+node_modules/
+dist/
+__pycache__/
+*.py[cod]
+*.sqlite3
+backend/staticfiles/
+backend/media/
+design-assets/*.tmp
+
