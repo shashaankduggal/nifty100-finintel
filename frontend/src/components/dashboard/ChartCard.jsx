@@ -10,8 +10,7 @@ export function ChartCard({ title, subtitle, children, actions }) {
         </div>
         {actions}
       </div>
-      <div className="h-[320px]">{children}</div>
+      <div className="h-[320px] w-full min-w-0">{children}</div>
     </Card>
   );
 }
-

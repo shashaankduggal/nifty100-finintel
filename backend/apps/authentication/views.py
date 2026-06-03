@@ -1,3 +1,4 @@
+from django.db import DatabaseError, OperationalError, ProgrammingError
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -7,12 +8,27 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import AdminLoginSerializer, LoginSerializer, RegisterSerializer, build_user_payload
 
 
+def _database_not_ready_response() -> Response:
+    return Response(
+        {
+            "detail": (
+                "Database schema is not initialized. Run `python backend/manage.py migrate` "
+                "and restart the backend."
+            )
+        },
+        status=status.HTTP_503_SERVICE_UNAVAILABLE,
+    )
+
+
 class AdminLoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = AdminLoginSerializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except (DatabaseError, OperationalError, ProgrammingError):
+            return _database_not_ready_response()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -21,7 +37,10 @@ class LoginView(APIView):
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except (DatabaseError, OperationalError, ProgrammingError):
+            return _database_not_ready_response()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -30,8 +49,11 @@ class RegisterView(APIView):
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
+        try:
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+        except (DatabaseError, OperationalError, ProgrammingError):
+            return _database_not_ready_response()
         return Response(serializer.to_representation(user), status=status.HTTP_201_CREATED)
 
 
@@ -46,6 +68,8 @@ class LogoutView(APIView):
         try:
             token = RefreshToken(refresh_token)
             token.blacklist()
+        except (DatabaseError, OperationalError, ProgrammingError):
+            return _database_not_ready_response()
         except Exception:
             return Response({"detail": "Invalid refresh token."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -64,5 +88,8 @@ class RefreshView(APIView):
 
     def post(self, request):
         serializer = TokenRefreshSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except (DatabaseError, OperationalError, ProgrammingError):
+            return _database_not_ready_response()
         return Response(serializer.validated_data, status=status.HTTP_200_OK)

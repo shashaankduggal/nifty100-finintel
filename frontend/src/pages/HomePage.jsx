@@ -145,7 +145,7 @@ export function HomePage() {
               </div>
             </div>
             <ChartCard title="Preview chart" subtitle="Stylized dashboard preview for the hero section.">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
                 <ReLineChart data={previewSeries}>
                   <CartesianGrid stroke="rgba(148,163,184,0.14)" vertical={false} />
                   <XAxis dataKey="year" stroke="#64748b" tickLine={false} axisLine={false} />

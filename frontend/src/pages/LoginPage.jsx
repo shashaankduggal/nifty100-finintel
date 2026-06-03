@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { PageContainer } from "../components/layout/PageContainer";
+import { getApiErrorMessage } from "../lib/apiError";
 import { useAuth } from "../context/AuthContext";
 
 export function LoginPage() {
@@ -21,18 +22,24 @@ export function LoginPage() {
     setIsSubmitting(true);
     setError("");
 
+    // Validate against hardcoded credentials
+    if (formState.identifier !== "admin" || formState.password !== "admin") {
+      setError("Invalid credentials. Username and password must both be 'admin'.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await adminLogin(formState);
       navigate(from, { replace: true });
     } catch (authError) {
-      const isNetworkFailure =
-        authError?.message === "Network Error" || !authError?.response;
-      const responseMessage = isNetworkFailure
-        ? "Django JWT backend is not reachable. Start the backend on http://127.0.0.1:8000 and try again."
-        : authError?.response?.data?.detail ??
-          authError?.response?.data?.non_field_errors?.[0] ??
-          "Admin login failed. Connect a staff account and try again.";
-      setError(responseMessage);
+      setError(
+        getApiErrorMessage(
+          authError,
+          "Admin login failed. Connect a staff account and try again.",
+          "Django JWT backend is not reachable. Start the backend on http://127.0.0.1:8000 and try again.",
+        ),
+      );
     } finally {
       setIsSubmitting(false);
     }

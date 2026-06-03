@@ -239,7 +239,7 @@ export function DashboardPage({ activeView = "overview", setActiveView = () => {
               <CompanySelector value={selectedCompany} options={companies} onChange={setSelectedCompany} />
             }
           >
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={320}>
               <LineChart data={overviewSeries}>
                 <CartesianGrid stroke="rgba(148,163,184,0.12)" vertical={false} />
                 <XAxis dataKey="year" stroke="#64748b" tickLine={false} axisLine={false} />

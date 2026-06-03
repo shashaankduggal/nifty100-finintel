@@ -1,10 +1,11 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { ArrowRight, Building2, Mail, User2, LockKeyhole } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { PageContainer } from "../components/layout/PageContainer";
+import { getApiErrorMessage } from "../lib/apiError";
 import { useAuth } from "../context/AuthContext";
 
 export function RegisterPage() {
@@ -28,7 +29,13 @@ export function RegisterPage() {
       await register(formState);
       navigate("/dashboard", { replace: true });
     } catch (authError) {
-      setError(authError?.response?.data?.detail ?? "Registration failed. Connect the JWT backend and try again.");
+      setError(
+        getApiErrorMessage(
+          authError,
+          "Registration failed. Connect the JWT backend and try again.",
+          "Django JWT backend is not reachable. Start the backend with .\\start-dev.bat and try again.",
+        ),
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -102,7 +109,7 @@ export function RegisterPage() {
                     value={formState.password}
                     onChange={(event) => setFormState((current) => ({ ...current, password: event.target.value }))}
                     className="w-full bg-transparent text-sm outline-none placeholder:text-slate-500"
-                    placeholder="••••••••"
+                    placeholder="Enter password"
                   />
                 </div>
               </label>
@@ -148,3 +155,4 @@ export function RegisterPage() {
     </PageContainer>
   );
 }
+

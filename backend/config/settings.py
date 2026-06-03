@@ -15,7 +15,8 @@ from .env import (
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = get_required_env("SECRET_KEY")
+# Hardcoded for local hobby development without needing environment setup.
+SECRET_KEY = "BALLS"
 DEBUG = get_bool_env("DEBUG", False)
 
 ALLOWED_HOSTS = get_csv_env("ALLOWED_HOSTS", "localhost,127.0.0.1")
@@ -65,16 +66,26 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": get_env("DB_NAME", ""),
-        "USER": get_env("DB_USER", ""),
-        "PASSWORD": get_env("DB_PASSWORD", ""),
-        "HOST": get_env("DB_HOST", "localhost"),
-        "PORT": get_env("DB_PORT", "5432"),
+DB_NAME = get_env("DB_NAME")
+
+if DB_NAME:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": DB_NAME,
+            "USER": get_env("DB_USER", ""),
+            "PASSWORD": get_env("DB_PASSWORD", ""),
+            "HOST": get_env("DB_HOST", "localhost"),
+            "PORT": get_env("DB_PORT", "5432"),
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -96,18 +107,18 @@ MIGRATION_MODULES = {
 }
 SILENCED_SYSTEM_CHECKS = ["fields.W342"]
 
-CORS_ALLOWED_ORIGINS = get_csv_env("CORS_ALLOWED_ORIGINS")
+CORS_ALLOWED_ORIGINS = get_csv_env("CORS_ALLOWED_ORIGINS", "http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000")
 CORS_ALLOW_CREDENTIALS = get_bool_env("CORS_ALLOW_CREDENTIALS", True)
 
-JWT_ACCESS_TOKEN_LIFETIME_HOURS = get_int_env("JWT_ACCESS_TOKEN_LIFETIME_HOURS", 24)
-JWT_REFRESH_TOKEN_LIFETIME_DAYS = get_int_env("JWT_REFRESH_TOKEN_LIFETIME_DAYS", 7)
+JWT_ACCESS_TOKEN_LIFETIME_HOURS = get_int_env("JWT_ACCESS_TOKEN_LIFETIME_HOURS", 720)  # 30 days for local dev
+JWT_REFRESH_TOKEN_LIFETIME_DAYS = get_int_env("JWT_REFRESH_TOKEN_LIFETIME_DAYS", 365)  # 1 year for local dev
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.AllowAny",  # Allow all for local dev
     ),
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -117,8 +128,10 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=JWT_ACCESS_TOKEN_LIFETIME_HOURS),
     "REFRESH_TOKEN_LIFETIME": days(JWT_REFRESH_TOKEN_LIFETIME_DAYS),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
+    "ROTATE_REFRESH_TOKENS": False,  # Disabled for local dev
+    "BLACKLIST_AFTER_ROTATION": False,  # Disabled for local dev
     "AUTH_HEADER_TYPES": ("Bearer",),
-    "UPDATE_LAST_LOGIN": True,
+    "UPDATE_LAST_LOGIN": False,  # Disabled for local dev
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": "BALLS",  # Same as SECRET_KEY for simplicity
 }
