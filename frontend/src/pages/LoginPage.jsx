@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { LockKeyhole, Mail, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
@@ -25,10 +25,13 @@ export function LoginPage() {
       await adminLogin(formState);
       navigate(from, { replace: true });
     } catch (authError) {
-      const responseMessage =
-        authError?.response?.data?.detail ??
-        authError?.response?.data?.non_field_errors?.[0] ??
-        "Admin login failed. Connect a staff account and try again.";
+      const isNetworkFailure =
+        authError?.message === "Network Error" || !authError?.response;
+      const responseMessage = isNetworkFailure
+        ? "Django JWT backend is not reachable. Start the backend on http://127.0.0.1:8000 and try again."
+        : authError?.response?.data?.detail ??
+          authError?.response?.data?.non_field_errors?.[0] ??
+          "Admin login failed. Connect a staff account and try again.";
       setError(responseMessage);
     } finally {
       setIsSubmitting(false);
@@ -124,3 +127,4 @@ export function LoginPage() {
     </PageContainer>
   );
 }
+
