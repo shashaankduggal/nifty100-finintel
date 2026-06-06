@@ -52,6 +52,24 @@ const featureCards = [
   },
 ];
 
+const faqItems = [
+  {
+    question: "Who is this for?",
+    answer:
+      "Analysts, founders, and anyone who wants a cleaner way to inspect Nifty100 fundamentals without jumping between spreadsheets.",
+  },
+  {
+    question: "What data does it use?",
+    answer:
+      "It pulls from the warehouse-backed company, financial, forecast, peer, and document datasets that power the dashboard views.",
+  },
+  {
+    question: "Do I need an admin account?",
+    answer:
+      "Only for admin tools and internal setup. The public homepage and dashboard preview can be explored without extra setup.",
+  },
+];
+
 function StatBlock({ label, value, delta }) {
   return (
     <Card className="p-5">
@@ -228,6 +246,25 @@ export function HomePage() {
               ))}
             </div>
           </Card>
+        </section>
+
+        <section className="mt-24">
+          <div className="max-w-2xl">
+            <div className="text-sm font-semibold uppercase tracking-[0.3em] text-cyan-200">
+              FAQ
+            </div>
+            <h2 className="mt-4 text-3xl font-semibold text-white sm:text-4xl">
+              Quick answers, no ceremony.
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-4 lg:grid-cols-3">
+            {faqItems.map((item) => (
+              <Card key={item.question} className="p-5">
+                <h3 className="text-lg font-semibold text-white">{item.question}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-400">{item.answer}</p>
+              </Card>
+            ))}
+          </div>
         </section>
       </PageContainer>
 
