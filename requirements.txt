@@ -1,6 +1,17 @@
-Django>=5.1,<6.0
-djangorestframework>=3.15,<4.0
-django-cors-headers>=4.4,<5.0
-djangorestframework-simplejwt>=5.3,<6.0
-psycopg[binary]>=3.2,<4.0
+# Backend runtime
+Django>=5.2.14,<6.0
+asgiref>=3.11.1,<4.0
+django-cors-headers>=4.9.0,<5.0
+djangorestframework>=3.17.1,<4.0
+djangorestframework-simplejwt>=5.5.1,<6.0
+PyJWT>=2.13.0,<3.0
+psycopg[binary]>=3.3.4,<4.0
+sqlparse>=0.5.5,<0.6
+tzdata>=2026.2,<2027.0
 
+# Data-processing scripts
+numpy>=2.0,<3.0
+pandas>=2.2,<3.0
+openpyxl>=3.1,<4.0
+SQLAlchemy>=2.0,<3.0
+scikit-learn>=1.5,<2.0
